@@ -2,10 +2,10 @@ import ContactForm from '../components/contact/ContactForm';
 
 const ContactPage = () => {
   return (
-    <div className="container my-5">
+<div className="container my-5 px-3 px-md-0">
 
       {/* Encabezado */}
-      <div className="text-center mb-5">
+        <div className="text-center mb-5 px-2">
         <h1 className="display-4 fw-bold mb-3">Contáctanos</h1>
         <p className="lead text-muted">
           ¿Tienes alguna consulta o sugerencia? Estamos para ayudarte.
@@ -25,7 +25,7 @@ const ContactPage = () => {
           </div>
         </div>
 
-        <div className="col-md-4">
+        <div className="col-12 col-md-4">
           <div className="card text-center shadow-sm border-0 rounded-4 h-100">
             <div className="card-body py-4">
               <div className="fs-1 mb-2">📧</div>
