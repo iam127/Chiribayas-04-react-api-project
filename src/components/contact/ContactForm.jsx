@@ -14,27 +14,21 @@ const ContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateField = (name, value) => {
+    const trimmed = value.trim();
+
+    if (!trimmed) return `El campo ${name} es obligatorio`;
+
     switch (name) {
       case 'name':
-        if (!value.trim()) return 'El nombre es requerido';
-        if (value.trim().length < 3) return 'El nombre debe tener al menos 3 caracteres';
-        return '';
-
+        return trimmed.length < 3 ? 'Debe tener mínimo 3 caracteres' : '';
       case 'email':
-        if (!value.trim()) return 'El email es requerido';
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) return 'Email inválido';
-        return '';
-
-      case 'subject':
-        if (!value.trim()) return 'El asunto es requerido';
-        return '';
-
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)
+          ? ''
+          : 'Correo inválido';
       case 'message':
-        if (!value.trim()) return 'El mensaje es requerido';
-        if (value.trim().length < 10) return 'El mensaje debe tener al menos 10 caracteres';
-        return '';
-
+        return trimmed.length < 10
+          ? 'Debe tener mínimo 10 caracteres'
+          : '';
       default:
         return '';
     }
@@ -45,37 +39,30 @@ const ContactForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
 
     if (touched[name]) {
-      const error = validateField(name, value);
-      setErrors(prev => ({ ...prev, [name]: error }));
+      setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
     }
   };
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
+
     setTouched(prev => ({ ...prev, [name]: true }));
-    
-    const error = validateField(name, value);
-    setErrors(prev => ({ ...prev, [name]: error }));
+    setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
   };
 
   const validateForm = () => {
     const newErrors = {};
     Object.keys(formData).forEach(key => {
-      const error = validateField(key, formData[key]);
-      if (error) newErrors[key] = error;
+      const err = validateField(key, formData[key]);
+      if (err) newErrors[key] = err;
     });
     return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    setTouched({
-      name: true,
-      email: true,
-      subject: true,
-      message: true
-    });
+
+    setTouched({ name: true, email: true, subject: true, message: true });
 
     const newErrors = validateForm();
     setErrors(newErrors);
@@ -83,7 +70,7 @@ const ContactForm = () => {
     if (Object.keys(newErrors).length > 0) {
       setSubmitStatus({
         type: 'error',
-        message: 'Por favor corrige los errores antes de enviar'
+        message: 'Corrige los errores antes de enviar.'
       });
       return;
     }
@@ -96,22 +83,16 @@ const ContactForm = () => {
 
       setSubmitStatus({
         type: 'success',
-        message: '¡Mensaje enviado correctamente! Te contactaremos pronto.'
+        message: '¡Mensaje enviado correctamente!'
       });
 
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
+      setFormData({ name: '', email: '', subject: '', message: '' });
       setTouched({});
       setErrors({});
-
-    } catch (error) {
+    } catch {
       setSubmitStatus({
         type: 'error',
-        message: 'Error al enviar el mensaje. Intenta nuevamente.'
+        message: 'Hubo un error inesperado. Intenta nuevamente.'
       });
     } finally {
       setIsSubmitting(false);
@@ -119,19 +100,19 @@ const ContactForm = () => {
   };
 
   return (
-    <div className="card shadow">
+    <div className="card shadow-sm border-0 rounded-4">
       <div className="card-body p-4">
         <form onSubmit={handleSubmit} noValidate>
+
           {/* Nombre */}
           <div className="mb-3">
-            <label htmlFor="name" className="form-label">
-              Nombre <span className="text-danger">*</span>
-            </label>
+            <label className="form-label">Nombre *</label>
             <input
               type="text"
-              className={`form-control ${touched.name && errors.name ? 'is-invalid' : ''} ${touched.name && !errors.name && formData.name ? 'is-valid' : ''}`}
-              id="name"
               name="name"
+              className={`form-control form-control-lg ${
+                touched.name && errors.name ? 'is-invalid' : ''
+              }`}
               value={formData.name}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -144,14 +125,13 @@ const ContactForm = () => {
 
           {/* Email */}
           <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Email <span className="text-danger">*</span>
-            </label>
+            <label className="form-label">Email *</label>
             <input
               type="email"
-              className={`form-control ${touched.email && errors.email ? 'is-invalid' : ''} ${touched.email && !errors.email && formData.email ? 'is-valid' : ''}`}
-              id="email"
               name="email"
+              className={`form-control form-control-lg ${
+                touched.email && errors.email ? 'is-invalid' : ''
+              }`}
               value={formData.email}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -164,18 +144,17 @@ const ContactForm = () => {
 
           {/* Asunto */}
           <div className="mb-3">
-            <label htmlFor="subject" className="form-label">
-              Asunto <span className="text-danger">*</span>
-            </label>
+            <label className="form-label">Asunto *</label>
             <input
               type="text"
-              className={`form-control ${touched.subject && errors.subject ? 'is-invalid' : ''} ${touched.subject && !errors.subject && formData.subject ? 'is-valid' : ''}`}
-              id="subject"
               name="subject"
+              className={`form-control form-control-lg ${
+                touched.subject && errors.subject ? 'is-invalid' : ''
+              }`}
               value={formData.subject}
               onChange={handleChange}
               onBlur={handleBlur}
-              placeholder="Asunto del mensaje"
+              placeholder="Motivo del mensaje"
             />
             {touched.subject && errors.subject && (
               <div className="invalid-feedback">{errors.subject}</div>
@@ -184,44 +163,39 @@ const ContactForm = () => {
 
           {/* Mensaje */}
           <div className="mb-3">
-            <label htmlFor="message" className="form-label">
-              Mensaje <span className="text-danger">*</span>
-            </label>
+            <label className="form-label">Mensaje *</label>
             <textarea
-              className={`form-control ${touched.message && errors.message ? 'is-invalid' : ''} ${touched.message && !errors.message && formData.message ? 'is-valid' : ''}`}
-              id="message"
               name="message"
               rows="5"
+              className={`form-control form-control-lg ${
+                touched.message && errors.message ? 'is-invalid' : ''
+              }`}
               value={formData.message}
               onChange={handleChange}
               onBlur={handleBlur}
-              placeholder="Escribe tu mensaje aquí..."
+              placeholder="Escribe tu mensaje..."
             ></textarea>
             {touched.message && errors.message && (
               <div className="invalid-feedback">{errors.message}</div>
             )}
-            {formData.message && (
-              <small className="text-muted">
-                {formData.message.length} caracteres
-              </small>
-            )}
           </div>
 
-          {/* Alertas */}
+          {/* Estado */}
           {submitStatus && (
-            <div className={`alert alert-${submitStatus.type === 'success' ? 'success' : 'danger'} d-flex align-items-center`}>
-              <span className="me-2">
-                {submitStatus.type === 'success' ? '✅' : '❌'}
-              </span>
+            <div
+              className={`alert alert-${
+                submitStatus.type === 'success' ? 'success' : 'danger'
+              } mt-3`}
+            >
               {submitStatus.message}
             </div>
           )}
 
           {/* Botón */}
-          <div className="d-grid">
+          <div className="d-grid mt-4">
             <button
+              className="btn btn-primary btn-lg rounded-pill"
               type="submit"
-              className="btn btn-primary btn-lg"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
@@ -230,10 +204,11 @@ const ContactForm = () => {
                   Enviando...
                 </>
               ) : (
-                <>📧 Enviar Mensaje</>
+                'Enviar mensaje'
               )}
             </button>
           </div>
+
         </form>
       </div>
     </div>
