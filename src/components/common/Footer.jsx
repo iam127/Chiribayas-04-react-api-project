@@ -5,21 +5,21 @@ const Footer = () => {
         <div className="row">
           <div className="col-md-6">
             <h5>🎮 PokéApp</h5>
-            <p className="text-muted">
+            <p>
               Aplicación web desarrollada con React para consultar información de Pokémon.
             </p>
           </div>
           <div className="col-md-3">
             <h6>Enlaces</h6>
             <ul className="list-unstyled">
-              <li><a href="/" className="text-decoration-none text-muted">Inicio</a></li>
-              <li><a href="/lista" className="text-decoration-none text-muted">Lista</a></li>
-              <li><a href="/contacto" className="text-decoration-none text-muted">Contacto</a></li>
+              <li><a href="/" className="text-decoration-none ">Inicio</a></li>
+              <li><a href="/lista" className="text-decoration-none ">Lista</a></li>
+              <li><a href="/contacto" className="text-decoration-none ">Contacto</a></li>
             </ul>
           </div>
           <div className="col-md-3">
             <h6>Desarrolladores</h6>
-            <ul className="list-unstyled text-muted">
+            <ul className="list-unstyled ">
               <li>Matias Galvan</li>
               <li>Juan Aguirre</li>
               <li>Luis Galvan</li>
@@ -28,7 +28,7 @@ const Footer = () => {
           </div>
         </div>
         <hr className="border-secondary" />
-        <div className="text-center text-muted">
+        <div className="text-center ">
           <p className="mb-0">© 2024 PokéApp - TECSUP. Todos los derechos reservados.</p>
         </div>
       </div>
