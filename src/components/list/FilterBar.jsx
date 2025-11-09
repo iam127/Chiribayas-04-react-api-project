@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const FilterBar = ({ onFilterChange, onSearch, onClearFilters }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -10,15 +10,11 @@ const FilterBar = ({ onFilterChange, onSearch, onClearFilters }) => {
     'bug', 'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'
   ];
 
-  useEffect(() => {
-    const delaySearch = setTimeout(() => {
-      if (searchTerm) {
-        onSearch(searchTerm);
-      }
-    }, 500);
-
-    return () => clearTimeout(delaySearch);
-  }, [searchTerm, onSearch]);
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    onSearch(value);
+  };
 
   const handleTypeChange = (e) => {
     const type = e.target.value;
@@ -38,16 +34,21 @@ const FilterBar = ({ onFilterChange, onSearch, onClearFilters }) => {
         <div className="row g-3">
           <div className="col-md-5">
             <label htmlFor="searchInput" className="form-label">
-              🔍 Buscar por nombre
+              🔍 Buscar por nombre o habilidad
             </label>
             <input
               id="searchInput"
               type="text"
               className="form-control"
-              placeholder="Ej: pikachu"
+              placeholder="Ej: pika, overgrow, blaze..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
             />
+            {searchTerm && (
+              <small className="text-muted">
+                Buscando: "{searchTerm}"
+              </small>
+            )}
           </div>
 
           <div className="col-md-5">
@@ -71,6 +72,7 @@ const FilterBar = ({ onFilterChange, onSearch, onClearFilters }) => {
 
           <div className="col-md-2 d-flex align-items-end">
             <button
+              type="button"
               className="btn btn-outline-secondary w-100"
               onClick={handleClearFilters}
             >
